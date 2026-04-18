@@ -1,0 +1,75 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    color: #E2E8F0;
+    background-color: #020617;
+    font-synthesis: none;
+    text-rendering: optimizeLegibility;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+
+  html,
+  body,
+  #root {
+    min-height: 100%;
+  }
+
+  body {
+    @apply bg-agrow-dark text-agrow-text;
+    min-height: 100vh;
+    margin: 0;
+    font-family: 'Sora', 'Segoe UI', sans-serif;
+  }
+}
+
+.glass-card {
+  @apply bg-slate-950/80 backdrop-blur-3xl border border-slate-700/40 shadow-2xl rounded-3xl transition-all duration-300;
+}
+
+.glass-card:hover {
+  @apply border-slate-500/40 bg-slate-900/80;
+}
+
+.glass-input {
+  @apply bg-slate-950/70 border border-slate-700/50 rounded-xl px-4 py-2 text-agrow-text focus:outline-none focus:ring-2 focus:ring-indigo-500/40 transition-all;
+}
+
+.agrow-gradient {
+  background: radial-gradient(circle at top right, rgba(99,102,241,0.18) 0%, rgba(14,18,40,0.95) 55%, rgba(14,22,46,1) 100%);
+}
+
+.nav-link-active {
+  @apply bg-agrow-primary text-agrow-text font-bold;
+}
+
+/* Custom Scrollbar */
+::-webkit-scrollbar {
+  width: 8px;
+}
+
+::-webkit-scrollbar-track {
+  @apply bg-agrow-dark;
+}
+
+::-webkit-scrollbar-thumb {
+  @apply bg-indigo-500/30 rounded-full hover:bg-indigo-500/50;
+}
+
+#root {
+  width: 100%;
+  min-height: 100vh;
+}
+
+a {
+  color: inherit;
+}
+
+button,
+input,
+textarea {
+  font: inherit;
+}

@@ -1,0 +1,31 @@
+.agent/*
+.gemini/*
+.kilocode/*
+.opencode/*
+openspec/*
+.github/*
+.codex/*
+str.txt
+
+# Node
+node_modules/
+node_modules
+dist/
+dist
+.env
+
+# Python
+__pycache__/
+**pycache**
+*.pyc
+venv/
+venv
+
+# OS
+.DS_Store
+
+# Logs
+*.log
+
+# Docker
+endee-data/
