@@ -4,72 +4,86 @@
 
 @layer base {
   :root {
-    color: #E2E8F0;
-    background-color: #020617;
-    font-synthesis: none;
-    text-rendering: optimizeLegibility;
-    -webkit-font-smoothing: antialiased;
-    -moz-osx-font-smoothing: grayscale;
+    --background: #ffffff;
+    --foreground: #020617;
+  }
+
+  .dark {
+    --background: #020617;
+    --foreground: #F9FAFB;
   }
 
   html,
   body,
   #root {
     min-height: 100%;
+    @apply bg-white text-[#020617] dark:bg-[#020617] dark:text-[#F9FAFB] transition-colors duration-300;
   }
 
+  /* Custom background gradients per theme */
   body {
-    @apply bg-agrow-dark text-agrow-text;
-    min-height: 100vh;
-    margin: 0;
-    font-family: 'Sora', 'Segoe UI', sans-serif;
+    background: radial-gradient(circle at top right, #f8fafc 0%, #ffffff 100%);
+  }
+
+  .dark body {
+    background: radial-gradient(circle at top right, #1e293b 0%, #020617 100%);
   }
 }
 
-.glass-card {
-  @apply bg-slate-950/80 backdrop-blur-3xl border border-slate-700/40 shadow-2xl rounded-3xl transition-all duration-300;
-}
+@layer components {
+  .glass-card {
+    @apply bg-white/40 dark:bg-white/5 backdrop-blur-xl border border-black/5 dark:border-white/10 rounded-2xl shadow-xl dark:shadow-2xl transition-all duration-300;
+    will-change: transform, opacity, border-color;
+  }
 
-.glass-card:hover {
-  @apply border-slate-500/40 bg-slate-900/80;
-}
+  .dashboard-card {
+    @apply glass-card hover:bg-white/60 dark:hover:bg-white/10 hover:border-emerald-500/20 dark:hover:border-white/20 hover:shadow-emerald-500/10 hover:scale-[1.01] hover:-translate-y-0.5;
+  }
 
-.glass-input {
-  @apply bg-slate-950/70 border border-slate-700/50 rounded-xl px-4 py-2 text-agrow-text focus:outline-none focus:ring-2 focus:ring-indigo-500/40 transition-all;
-}
+  .sidebar-link {
+    @apply flex items-center justify-center w-full py-4 text-gray-500 hover:text-emerald-400 hover:bg-emerald-500/10 transition-all rounded-xl;
+    will-change: transform, background-color;
+  }
 
-.agrow-gradient {
-  background: radial-gradient(circle at top right, rgba(99,102,241,0.18) 0%, rgba(14,18,40,0.95) 55%, rgba(14,22,46,1) 100%);
-}
+  .sidebar-link-active {
+    @apply text-emerald-400 bg-emerald-500/10;
+  }
 
-.nav-link-active {
-  @apply bg-agrow-primary text-agrow-text font-bold;
-}
+  .glow-overlay {
+    @apply absolute pointer-events-none rounded-full blur-[120px] opacity-20 -z-10;
+    will-change: transform;
+  }
 
-/* Custom Scrollbar */
-::-webkit-scrollbar {
-  width: 8px;
-}
+  .custom-scrollbar::-webkit-scrollbar {
+    width: 4px;
+  }
 
-::-webkit-scrollbar-track {
-  @apply bg-agrow-dark;
-}
+  .custom-scrollbar::-webkit-scrollbar-track {
+    background: transparent;
+  }
 
-::-webkit-scrollbar-thumb {
-  @apply bg-indigo-500/30 rounded-full hover:bg-indigo-500/50;
+  .custom-scrollbar::-webkit-scrollbar-thumb {
+    background: rgba(255, 255, 255, 0.05);
+    border-radius: 10px;
+    transition: background 0.3s;
+  }
+
+  .custom-scrollbar::-webkit-scrollbar-thumb:hover {
+    background: rgba(16, 185, 129, 0.3);
+  }
+
+  .no-animations * {
+    transition: none !important;
+    animation: none !important;
+  }
+
+  /* Global Transition Defaults */
+  button, a, div, span, input, textarea {
+    @apply transition-all duration-300;
+  }
 }
 
 #root {
   width: 100%;
   min-height: 100vh;
-}
-
-a {
-  color: inherit;
-}
-
-button,
-input,
-textarea {
-  font: inherit;
 }

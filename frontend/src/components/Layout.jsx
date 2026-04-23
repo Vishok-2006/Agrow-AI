@@ -1,144 +1,101 @@
-import { NavLink, useNavigate, Outlet } from 'react-router-dom'
-import {
-  LayoutDashboard,
-  CloudSun,
-  Sprout,
-  MessageSquare,
-  LogOut,
-  Menu,
-  X,
-  Leaf,
-} from 'lucide-react'
-import { useState, useEffect } from 'react'
-import { checkEndeeHealth } from '../services/endee'
-import { statusService } from '../services/api'
+import { useNavigate, Outlet, useLocation } from 'react-router-dom'
+import { Bell } from 'lucide-react'
+import { useState, useEffect, useRef } from 'react'
 import { useAuth } from '../context/AuthContext'
-import ConsolePanel from './ConsolePanel'
+import Sidebar from './Sidebar'
+import NotificationDropdown from './NotificationDropdown'
+import SettingsModal from './SettingsModal'
 
 const Layout = () => {
-  const [isSidebarOpen, setIsSidebarOpen] = useState(true)
-  const [endeeStatus, setEndeeStatus] = useState('checking')
-  const [backendStatus, setBackendStatus] = useState('checking')
   const navigate = useNavigate()
-  const { signOut, user } = useAuth()
+  const location = useLocation()
+  const { user } = useAuth()
+  const [isCollapsed, setIsCollapsed] = useState(false)
+  const [isNotificationsOpen, setIsNotificationsOpen] = useState(false)
+  const [isSettingsOpen, setIsSettingsOpen] = useState(false)
+  const isAssistant = location.pathname === '/assistant'
+  const notificationRef = useRef(null)
 
+  // Handle clicks outside notification dropdown
   useEffect(() => {
-    let isMounted = true
-
-    const checkHealth = async () => {
-      try {
-        const response = await statusService.getHealth()
-        if (isMounted) {
-          setBackendStatus(response.data?.backend === 'connected' ? 'connected' : 'disconnected')
-          setEndeeStatus(response.data?.endee === 'connected' ? 'connected' : 'disconnected')
-        }
-      } catch (error) {
-        if (isMounted) {
-          setBackendStatus('disconnected')
-          setEndeeStatus('disconnected')
-        }
-      }
-
-      try {
-        const isHealthy = await checkEndeeHealth()
-        if (isMounted) {
-          setEndeeStatus(isHealthy ? 'connected' : 'disconnected')
-        }
-      } catch {
-        if (isMounted) {
-          setEndeeStatus('disconnected')
-        }
+    const handleClickOutside = (event) => {
+      if (notificationRef.current && !notificationRef.current.contains(event.target)) {
+        setIsNotificationsOpen(false)
       }
     }
-
-    checkHealth()
-
-    return () => {
-      isMounted = false
-    }
+    document.addEventListener('mousedown', handleClickOutside)
+    return () => document.removeEventListener('mousedown', handleClickOutside)
   }, [])
 
-  const handleLogout = async () => {
-    await signOut()
-    navigate('/login')
-  }
-
-  const navItems = [
-    { name: 'Dashboard', icon: LayoutDashboard, path: '/dashboard' },
-    { name: 'Weather', icon: CloudSun, path: '/weather' },
-    { name: 'Crop Recommendation', icon: Sprout, path: '/crop' },
-    { name: 'AI Assistant', icon: MessageSquare, path: '/assistant' },
-  ]
-
   return (
-    <div className="flex h-screen bg-[#0b1020] text-agrow-text transition-colors duration-300">
-      <aside className={`
-        ${isSidebarOpen ? 'w-64' : 'w-20'}
-        flex flex-col h-full bg-[#11162a] border-r border-white/10 transition-all duration-300 z-50
-      `}>
-        <div className="p-6 flex items-center gap-3">
-          <Leaf className="w-8 h-8 text-indigo-300 flex-shrink-0" />
-          {isSidebarOpen && <span className="text-xl font-bold tracking-tight text-white">AGROW AI</span>}
-        </div>
+    <div className="flex h-screen w-full bg-white dark:bg-[#020617] text-[#020617] dark:text-gray-100 overflow-hidden relative">
+      {/* Background Glow Blobs */}
+      <div className="glow-overlay w-[500px] h-[500px] bg-emerald-600 top-[-10%] right-[-10%] opacity-[0.05] pointer-events-none" />
+      <div className="glow-overlay w-[500px] h-[500px] bg-blue-700 bottom-[-10%] left-[10%] opacity-[0.05] pointer-events-none" />
 
-        <nav className="flex-1 px-4 space-y-2 mt-4">
-          {navItems.map((item) => (
-            <NavLink
-              key={item.path}
-              to={item.path}
-              className={({ isActive }) => `
-                flex items-center gap-4 px-3 py-3 rounded-2xl transition-all duration-200
-                ${isActive
-                  ? 'bg-indigo-500/20 text-white font-semibold shadow-lg shadow-indigo-500/10'
-                  : 'text-agrow-text/60 hover:bg-white/5 hover:text-agrow-text'}
-              `}
-            >
-              <item.icon className="w-5 h-5 flex-shrink-0" />
-              {isSidebarOpen && <span>{item.name}</span>}
-            </NavLink>
-          ))}
-        </nav>
+      {/* Sidebar Component */}
+      <Sidebar 
+        isCollapsed={isCollapsed} 
+        setIsCollapsed={setIsCollapsed} 
+        onOpenSettings={() => setIsSettingsOpen(true)}
+      />
 
-        <div className="p-4 border-t border-agrow-primary/20">
-          <button
-            onClick={handleLogout}
-            className="flex items-center gap-4 px-3 py-3 w-full rounded-2xl text-agrow-text/60 hover:bg-rose-500/10 hover:text-rose-300 transition-all duration-200"
-          >
-            <LogOut className="w-5 h-5 flex-shrink-0" />
-            {isSidebarOpen && <span>Sign Out</span>}
-          </button>
-        </div>
-      </aside>
-
-      <main className="flex-1 flex flex-col overflow-hidden">
-        <header className="h-20 bg-[#0b1020]/80 backdrop-blur-md border-b border-white/10 flex items-center justify-between px-8 z-40">
-          <button
-            onClick={() => setIsSidebarOpen(!isSidebarOpen)}
-            className="p-2 rounded-lg hover:bg-white/5 text-agrow-text"
-          >
-            {isSidebarOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
-          </button>
-
+      {/* Main Content Container */}
+      <div className="flex-1 flex flex-col min-w-0 h-full relative overflow-hidden bg-transparent">
+        {/* Top Navbar */}
+        <header className="h-20 flex-none bg-white/60 dark:bg-white/[0.02] backdrop-blur-xl border-b border-black/5 dark:border-white/10 flex items-center justify-between px-8 z-50 shadow-sm">
           <div className="flex items-center gap-4">
-            <div className="text-right hidden sm:block">
-              <p className="text-sm font-medium text-white">{user?.email ?? 'Agrow Farmer'}</p>
-              <p className="text-xs text-slate-400 uppercase tracking-[0.25em]">
-                Backend {backendStatus} · Endee {endeeStatus}
-              </p>
+             <div className="w-1.5 h-10 bg-emerald-500 rounded-full hidden sm:block shadow-[0_0_15px_rgba(16,185,129,0.3)]"></div>
+             <div>
+                <h2 className="text-sm font-black text-emerald-950 dark:text-white tracking-[0.2em] uppercase leading-none mb-1">
+                   Mission <span className="text-emerald-500 opacity-80">Control</span>
+                </h2>
+                <p className="text-[9px] text-emerald-800/40 dark:text-gray-500 font-bold uppercase tracking-[0.3em]">Quantum Stack v4.0</p>
+             </div>
+          </div>
+
+          <div className="flex items-center gap-6">
+            <div className="hidden lg:flex items-center gap-3 px-4 py-2 bg-emerald-500/10 dark:bg-emerald-500/5 rounded-full border border-emerald-500/20 dark:border-emerald-500/10 text-[10px] font-black text-emerald-600 dark:text-emerald-500 tracking-widest">
+               <div className="w-2 h-2 bg-emerald-500 rounded-full shadow-[0_0_12px_rgba(16,185,129,1)] animate-pulse"></div>
+               SYSTEM ENCRYPTED
             </div>
-            <div className="w-10 h-10 rounded-full bg-indigo-500 flex items-center justify-center text-white font-bold border border-indigo-300/30 shadow-lg shadow-indigo-500/20">
-              {user?.email ? user.email.charAt(0).toUpperCase() : 'A'}
+            
+            <div className="flex items-center gap-4 pl-6 border-l border-black/5 dark:border-white/10 relative">
+              {/* Notification Bell */}
+              <div className="relative" ref={notificationRef}>
+                <button 
+                  onClick={() => setIsNotificationsOpen(!isNotificationsOpen)}
+                  className={`p-2.5 rounded-xl transition-all relative group ${
+                    isNotificationsOpen ? 'bg-emerald-500/10 text-emerald-400' : 'text-emerald-700/50 dark:text-gray-500 hover:text-emerald-600 dark:hover:text-gray-200 hover:bg-emerald-500/5 dark:hover:bg-white/5'
+                  }`}
+                >
+                  <Bell className="w-5 h-5 group-hover:rotate-12 transition-transform" />
+                  <span className="absolute top-2 right-2 w-2 h-2 bg-red-500 rounded-full border-2 border-white dark:border-[#020617] shadow-[0_0_8px_rgba(239,68,68,0.5)]"></span>
+                </button>
+                <NotificationDropdown isOpen={isNotificationsOpen} onClose={() => setIsNotificationsOpen(false)} />
+              </div>
+
+              <div className="text-right hidden sm:block">
+                <p className="text-[11px] font-black text-emerald-950 dark:text-gray-100 uppercase tracking-widest">{user?.email?.split('@')[0] || 'ADMIN'}</p>
+                <p className="text-[9px] text-emerald-600 dark:text-emerald-500/60 font-black uppercase tracking-[0.2em] text-glow">Root Level</p>
+              </div>
+              <div className="w-10 h-10 rounded-2xl bg-gradient-to-br from-emerald-400 to-emerald-600 dark:from-emerald-500 dark:to-emerald-700 border border-white/20 flex items-center justify-center text-white font-black shadow-xl shadow-emerald-500/20 transform hover:scale-105 transition-transform cursor-pointer">
+                {user?.email ? user.email.charAt(0).toUpperCase() : 'A'}
+              </div>
             </div>
           </div>
         </header>
 
-        <section className="flex-1 overflow-y-auto bg-[radial-gradient(circle_at_top,_rgba(99,102,241,0.2),_rgba(11,16,32,0.98)_46%)] p-4 sm:p-8">
-          <div className="max-w-7xl mx-auto space-y-6">
-            <Outlet />
-            <ConsolePanel />
-          </div>
-        </section>
-      </main>
+        {/* Dynamic Viewport */}
+        <main className={`flex-1 overflow-hidden relative ${isAssistant ? 'p-0' : 'p-8'} bg-transparent`}>
+           <div className={`${isAssistant ? 'w-full h-full' : 'max-w-7xl mx-auto min-h-full'}`}>
+             <Outlet />
+           </div>
+        </main>
+      </div>
+
+      {/* Settings Modal */}
+      <SettingsModal isOpen={isSettingsOpen} onClose={() => setIsSettingsOpen(false)} />
     </div>
   )
 }

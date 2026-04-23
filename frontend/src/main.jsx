@@ -3,7 +3,6 @@ import ReactDOM from 'react-dom/client'
 import { BrowserRouter } from 'react-router-dom'
 import App from './App.jsx'
 import ErrorBoundary from './components/ErrorBoundary.jsx'
-import { LogProvider } from './context/LogContext.jsx'
 import './index.css'
 
 const rootElement = document.getElementById('root')
@@ -21,11 +20,9 @@ if (!rootElement) {
   ReactDOM.createRoot(rootElement).render(
     <React.StrictMode>
       <ErrorBoundary>
-        <LogProvider>
-          <BrowserRouter>
-            <App />
-          </BrowserRouter>
-        </LogProvider>
+        <BrowserRouter>
+          <App />
+        </BrowserRouter>
       </ErrorBoundary>
     </React.StrictMode>,
   )

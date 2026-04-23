@@ -4,7 +4,7 @@ from fastapi import APIRouter, HTTPException
 from models.schemas import AuthPayload
 from services.supabase_service import supabase_service
 
-router = APIRouter()
+router = APIRouter(prefix="/auth", tags=["auth"])
 
 _local_users: dict[str, dict[str, str]] = {}
 
@@ -32,7 +32,6 @@ def _build_local_auth_payload(email: str):
 
 
 @router.post("/register")
-@router.post("/auth/register")
 async def register(payload: AuthPayload):
     if not supabase_service.connected:
         if payload.email in _local_users:
@@ -63,7 +62,6 @@ async def register(payload: AuthPayload):
 
 
 @router.post("/login")
-@router.post("/auth/login")
 async def login(payload: AuthPayload):
     if not supabase_service.connected:
         user = _local_users.get(payload.email)

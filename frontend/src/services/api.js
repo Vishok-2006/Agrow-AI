@@ -1,6 +1,6 @@
 import axios from 'axios'
 
-const API_BASE_URL = import.meta.env.VITE_API_BASE_URL?.replace(/\/+$|$/, '') || 'http://127.0.0.1:8000'
+const API_BASE_URL = (import.meta.env.VITE_API_URL || import.meta.env.VITE_API_BASE_URL || 'http://127.0.0.1:8000').replace(/\/+$/, '')
 
 const api = axios.create({
   baseURL: API_BASE_URL,
@@ -9,39 +9,7 @@ const api = axios.create({
   },
 })
 
-let logHandler = null
 
-export const registerApiLogger = (handler) => {
-  logHandler = handler
-}
-
-const writeLog = (level, message, payload) => {
-  if (typeof logHandler === 'function') {
-    logHandler({ level, message, payload })
-  }
-}
-
-api.interceptors.request.use((config) => {
-  writeLog('info', `API ${String(config.method || 'GET').toUpperCase()} ${config.baseURL}${config.url}`, {
-    params: config.params,
-    data: config.data,
-  })
-  return config
-})
-
-api.interceptors.response.use(
-  (response) => {
-    writeLog('success', `Response ${response.status} ${response.config.url}`, response.data)
-    return response
-  },
-  (error) => {
-    writeLog('error', `Request failed ${error.config?.url || 'unknown'}`, {
-      status: error.response?.status,
-      detail: error.response?.data || error.message,
-    })
-    return Promise.reject(error)
-  },
-)
 
 export const extractApiError = (error, fallbackMessage = 'The request could not be completed.') => {
   if (axios.isAxiosError(error)) {

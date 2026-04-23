@@ -1,73 +1,82 @@
-# 🌱 AGROW AI – Smart Agriculture Assistant
+# AGROW AI 🌱
 
-AGROW AI is a production-ready, AI-powered agricultural platform designed for farmers. It provides real-time weather-based insights and an intelligent RAG chat assistant using local infrastructure.
+An AI-powered agricultural assistant that provides weather-based crop recommendations and smart farming insights. AGROW AI helps farmers make informed decisions through real-time weather integration and intelligent conversation.
 
-## 🚀 Key Features
+## Features
 
-- **Weather-Driven Insights**: Real-time analysis of temperature, humidity, and precipitation.
-- **Gemini AI Expert**: Personalized crop recommendations, irrigation schedules, and risk alerts.
-- **RAG-Enabled Chat**: Interactive local knowledge base querying via Endee Vector DB.
-- **Premium Dark UI**: Nature-inspired, high-fidelity agriculture dashboard with glassmorphism.
-- **Secure Auth**: Full user management via Supabase.
+*   🌦️ **Real-time Weather Integration**: Live weather monitoring with fallback mechanisms for data reliability.
+*   🤖 **AI Crop Recommendation**: Powered by **NVIDIA LLaMA model** for precise, context-aware agricultural advice.
+*   💬 **Smart Assistant with Memory**: Persistent chat history and session-level conversation memory for a ChatGPT-like experience.
+*   📊 **Premium Dashboard UI**: A modern, dark-themed interface built with glassmorphism and smooth animations.
+*   ☁️ **Supabase Backend**: Secure authentication and persistent data storage for user profiles and chat history.
 
-## ⚙️ Tech Stack
+## Tech Stack
 
-- **Frontend**: React (Vite) + Tailwind CSS + Framer Motion
-- **Backend**: FastAPI (Python) + Supabase
-- **Intelligence**: Google Gemini 1.5 Flash
-- **Vector Search**: Endee (Local Docker Instance)
-- **Data**: OpenWeatherMap API
+**Frontend:**
+*   React (Vite)
+*   Tailwind CSS
+*   Lucide Icons & Framer Motion
 
-## 🛠️ Setup Instructions
+**Backend:**
+*   FastAPI (Python)
+*   NVIDIA NIM API (LLaMA model)
+*   OpenWeatherMap API
 
-### 1. Prerequisites
-- Node.js (v18+)
-- Python (3.9+)
-- Docker (installed and running)
+**Database:**
+*   Supabase (PostgreSQL + Auth)
 
-### 2. Environment Variables
-Create a `.env` file in the root (or specific folders as required):
+## Setup Instructions
 
-**Frontend (`frontend/.env`):**
-```env
-VITE_SUPABASE_URL=your_supabase_url
-VITE_SUPABASE_ANON_KEY=your_supabase_key
-VITE_GEMINI_API_KEY=your_gemini_key
-VITE_WEATHER_API_KEY=your_openweathermap_key
-VITE_ENDEE_URL=http://localhost:8080
-```
+### Backend
 
-**Backend (`backend/.env`):**
-```env
-SUPABASE_URL=your_supabase_url
-SUPABASE_KEY=your_supabase_key
-GEMINI_API_KEY=your_gemini_key
-OPENWEATHER_API_KEY=your_openweathermap_key
-ENDEE_URL=http://localhost:8080/api/v1
-```
+1.  **Navigate to backend directory**:
+    ```bash
+    cd backend
+    ```
+2.  **Create virtual environment**:
+    ```bash
+    python3 -m venv venv
+    source venv/bin/activate
+    ```
+3.  **Install requirements**:
+    ```bash
+    pip install -r requirements.txt
+    ```
+4.  **Configure environment**:
+    Create a `.env` file with:
+    ```env
+    NVIDIA_API_KEY=your_key
+    WEATHER_API_KEY=your_key
+    SUPABASE_URL=your_url
+    SUPABASE_KEY=your_key
+    ```
+5.  **Run backend**:
+    ```bash
+    uvicorn main:app --reload
+    ```
 
-### 3. Running the Application
-We've provided a unified startup script:
+### Frontend
 
-```bash
-./scripts/run.sh
-```
+1.  **Navigate to frontend directory**:
+    ```bash
+    cd frontend
+    ```
+2.  **Install dependencies**:
+    ```bash
+    npm install
+    ```
+3.  **Run development server**:
+    ```bash
+    npm run dev
+    ```
 
-This script will:
-1. Start/Restart the **Endee Vector DB** in Docker.
-2. Wait for Endee to be healthy.
-3. Install and start the **FastAPI Backend**.
-4. Install and start the **React Frontend**.
+## Future Improvements
 
-## 📁 Project Structure
-
-- `/frontend`: React source code, components, and services.
-- `/backend`: FastAPI routes, services, and configurations.
-- `/scripts`: Automation and startup scripts.
-- `/docs`: Documentation and architecture specs.
-
-## 🚨 Local Infrastructure Note
-This application **strictly enforces** the use of a local Endee Vector DB. Ensure Docker is granted the necessary permissions to run and mount volumes.
+*   🚜 **Soil-based Recommendations**: Integration of soil sensor data for even more precise advice.
+*   🌐 **Multi-language Support**: Localizing the interface for regional languages in India.
+*   👤 **Farmer Personalization**: Customized profiles based on land size and irrigation type.
+*   📡 **Offline Mode**: Local caching for areas with limited connectivity.
 
 ---
-Built with ❤️ for sustainable farming.
+
+Built for sustainable and smart agriculture. 🌱

@@ -6,18 +6,20 @@ const PageShell = ({ title, description, loading, error, actions, children }) =>
   }
 
   return (
-    <div className="space-y-6">
-      <div className="flex flex-col gap-4 rounded-[32px] border border-white/10 bg-slate-950/70 p-6 shadow-2xl shadow-slate-950/30 backdrop-blur md:flex-row md:items-end md:justify-between">
+    <div className="space-y-4 relative">
+      <div className="flex flex-col gap-2 rounded-2xl border border-white/10 bg-white/5 backdrop-blur-xl p-4 shadow-2xl md:flex-row md:items-center md:justify-between">
         <div>
-          <p className="text-xs uppercase tracking-[0.4em] text-indigo-300/80">Agrow AI</p>
-          <h1 className="mt-3 text-3xl font-semibold text-white md:text-4xl">{title}</h1>
-          <p className="mt-3 max-w-2xl text-sm leading-7 text-slate-300">{description}</p>
+          <h1 className="text-xl font-bold text-gray-100 tracking-tight">{title}</h1>
+          <p className="text-[10px] text-gray-500 font-bold uppercase tracking-widest">{description}</p>
         </div>
-        {actions}
+        <div className="flex items-center gap-3">
+          {actions}
+        </div>
       </div>
 
       {error && (
-        <div className="rounded-[28px] border border-amber-400/20 bg-amber-500/10 px-5 py-4 text-sm text-amber-100">
+        <div className="rounded-xl border border-red-500/20 bg-red-500/5 backdrop-blur-md px-4 py-3 text-xs text-red-400 font-bold flex items-center gap-2">
+          <div className="w-1.5 h-1.5 bg-red-500 rounded-full animate-pulse shadow-[0_0_8px_rgba(239,68,68,0.5)]"></div>
           {error}
         </div>
       )}

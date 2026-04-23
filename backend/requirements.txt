@@ -1,15 +1,10 @@
 fastapi>=0.110.0
 uvicorn[standard]>=0.28.0
 python-dotenv==1.0.1
-google-generativeai>=0.5.0
-requests>=2.31.0
 supabase==2.3.7
 httpx==0.25.2
 msgpack>=1.0.8
-pydantic>=2.10.0
-pydantic-core>=2.20.0
-pydantic[email]
+pydantic[email]>=2.10.0
 pydantic-settings==2.2.1
 python-multipart==0.0.9
 slowapi==0.1.9
-email-validator
